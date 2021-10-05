@@ -1,40 +1,38 @@
-import React from 'react'
-import 'bootstrap/dist/css/bootstrap.min.css';
 import * as Icon from 'react-feather';
-import { useHistory, withRouter } from 'react-router-dom';
+import React, { useState } from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 
-export default function Login() {
+export default function Login({ dispatchUser }) {
 
-    const history = useHistory();
+  const [userName, setUserName] = useState('')
 
-    const handleClick = () => {
-        history.push("../to-do/ToDoList");
-    }
+  function handleUsername (evt) { 
+    setUserName(evt.target.value) }
 
-    return (
-        <form onSubmit={evt => evt.preventDefault()}>
-            <h1 class="h3 mb-3 fw-normal">Login Here</h1>
-            <div class="input-group col-lg-12 mb-4">
-                <div class="input-group-prepend">
-                    <span class="input-group-text bg-gray px-4 border-md border-right-0" >
-                        <Icon.User />
-                    </span>
-                </div>
-                <input id="email" type="email" name="email" placeholder="Email Address" class="form-control bg-white border-left-0 border-md" />
-            </div>
-            <div class="input-group col-lg-12 mb-4">
-                <div class="input-group-prepend">
-                    <span class="input-group-text bg-gray px-4 border-md border-right-0">
-                        <Icon.Lock />
-                    </span>
-                </div>
-                <input id="password" type="password" name="password" placeholder="password" class="form-control bg-white border-left-0 border-md" /> 
-            </div>
-            <div class="d-grid gap-2 d-md-flex">
-                <button onClick={()=> handleClick()} class="btn btn-primary" type="submit">Login</button>
-                <button class="btn btn-primary" type="submit">Register</button>
-            </div>
-        </form>
-    )
+  return (
+    <form onSubmit={e => {e.preventDefault(); dispatchUser({ type: 'LOGIN', userName})}}>
+      <h3>Login Here</h3>
+      <div class="input-group col-lg-12 mb-0">
+        <div>
+          <span>
+            <Icon.User />
+          </span>
+        </div>
+        <input type="text" name="login-username" value={userName} onChange={handleUsername} placeholder="user name"  id="login-username" />
+      </div>
+      <div class="input-group col-lg-12 mb-0">
+        <div>
+          <span>
+            <Icon.Lock />
+          </span>
+        </div>
+        <input id="password" type="password" name="password" placeholder="password" /> 
+      </div>
+      <div>
+        <input type="submit" value="Login" />
+        {/* <button type="submit">Register</button> */}
+      </div>
+    </form>
+  )
 }

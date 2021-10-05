@@ -4,17 +4,18 @@ import Logout from './Logout'
 import Register from './Register'
 import Login from './Login'
 
-export default function UserBar() {
+export default function UserBar({user,dispatchUser}) {
   
-  const user = ''
-
   if (user) {
-      return <Logout user={user} />
+    console.log("logout user:" + user)
+    return <Logout user={user} dispatchUser={dispatchUser} />
   } else {
-      return (
-          <>
-            <Login />
-          </>
-      )
+    console.log("user:" + user)
+    return (
+      <>
+        <Login dispatchUser={dispatchUser} />
+        <Register dispatchUser={dispatchUser} />
+      </>
+    )
   }
 }
