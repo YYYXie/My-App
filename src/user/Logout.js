@@ -1,9 +1,14 @@
-import React from 'react'
+import { React, useContext } from 'react'
 import * as Icon from 'react-feather';
+import { stateContext } from '../contexts/context'
 
-export default function Logout({user, dispatchUser}) {
+export default function Logout() {
+
+  const { state, dispatch } = useContext(stateContext)
+  const { user } = state;
+
   return (
-    <form onSubmit={e => {e.preventDefault(); dispatchUser({type:"LOGOUT"}) } }>
+    <form onSubmit={e => {e.preventDefault(); dispatch({type:"LOGOUT"}) } }>
       <h3>Logout Here</h3>
       <div class="input-group col-lg-12 mb-0">
         <span>

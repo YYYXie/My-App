@@ -1,10 +1,11 @@
 function userReducer (state, action) {
   switch (action.type) {
     case 'LOGIN':
-      // console.log('Login:' + state.user)
+      // console.log('Login:' + state.username)
+      // console.log('Login:' + action.username)
     case 'REGISTER':
       // console.log('Register')
-      return action.userName
+      return action.username
     case 'LOGOUT':
       // console.log('Logout')
       return ''
@@ -14,20 +15,25 @@ function userReducer (state, action) {
 }
 
 function toDoReducer (state, action) {
+  // console.log("In reducer:" + action.type);
   switch (action.type) {
-    case 'ADD':
-      console.log('Add to do:' + state.toDoList)
+    case 'CREATE_TODO':
+      //let idNum = parseInt(state.length)+1
       const newToDo = { 
-        id: state.length,
+        //id: idNum,
         title: action.title,
         description: action.description, 
         dateCreated: action.dateCreated,
         complete: action.complete,
         dateComplete: action.dateComplete,
       }
-      return [ newToDo, ...state ]
-    case 'DELETE':
-      return state.filter((x) => x.id !== action.id);
+      //console.log("create to do id:" +  idNum)
+      return [ newToDo, ...state ];
+    case 'DELETE_TODO':
+      console.log("delete id:" + action.id)
+      return state.filter((t,i) => i !== action.id);
+    case 'FETCH_TODOS':
+      return action.todos;
     default:
       return state;
   }
@@ -36,6 +42,6 @@ function toDoReducer (state, action) {
 export default function appReducer (state, action) {
   return {
     user: userReducer(state.user, action),
-    toDoList: toDoReducer(state.toDoList, action)
+    todos: toDoReducer(state.todos, action)
   }
 }

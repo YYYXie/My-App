@@ -1,16 +1,17 @@
-import React from 'react'
+import { React, useContext, useEffect } from 'react'
+import { stateContext } from '../contexts/context'
+import { useResource } from 'react-request-hook'
 import ToDo from './ToDo'
 
-export default function ToDoList ({dispatchToDo, toDoList = []}) {
+export default function ToDoList () {
 
-  function onDelete(){
-
-  }
+  const { state, dispatch } = useContext(stateContext)
+  const { todos } = state;
 
   return (
     <div>
-      {toDoList.map((t) => <ToDo {...t} dispatchToDo={dispatchToDo} title={t.title} description={t.description} dateCreated={t.dateCreated}
-      complete={t.complete} dateComplete={t.dateComplete} id={t.id} key={'ToDo-' + t.id}/>)}
+      {todos.map((t, i) => <ToDo {...t} title={t.title} description={t.description} dateCreated={t.dateCreated}
+      complete={t.complete} dateComplete={t.dateComplete} id={i} key={'ToDo-' + i}/>)}
     </div>
   )
 }

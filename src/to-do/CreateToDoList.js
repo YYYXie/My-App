@@ -1,13 +1,22 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useContext} from 'react'
+import { stateContext } from '../contexts/context'
+import { useResource } from 'react-request-hook'
+// import { useNavigation } from 'react-navi'
 
+export default function CreateToDoList () {
 
-export default function CreateToDoList ({user, dispatchToDo}) {
+  const [ title, setTitle] = useState('');
+  const [ description, setDescription] = useState('');
+  const [ dateCreated, setDateCreated] = useState('');
+  const [ complete, setComplete] = useState(false);
+  const [ dateComplete, setDateComplete] = useState('');
+  const { dispatch } = useContext(stateContext);
 
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [dateCreated, setDateCreated] = useState('');
-  const [complete, setComplete] = useState(false);
-  const [dateComplete, setDateComplete] = useState('');
+  const [todo , createToDo ] = useResource(({ title, description, dateCreated, complete, dateComplete }) => ({
+    url: '/todos',
+    method: 'post',
+    data: { title, description, dateCreated, complete, dateComplete }
+  }))
 
   function checkComplete(){
     if (!complete){
@@ -21,11 +30,16 @@ export default function CreateToDoList ({user, dispatchToDo}) {
   }
 
   useEffect( () => {
-    console.log(complete);
   }, [complete]);
 
+  function handleToDo(){
+    createToDo({title,description,dateCreated,complete,dateComplete})
+    dispatch({ type: 'CREATE_TODO', title,description,dateCreated,complete,dateComplete })
+  }
+
   return (
-    <form onSubmit={e => {e.preventDefault(); dispatchToDo({type: "ADD", title, description, dateCreated,complete,dateComplete});} }> 
+    // <form onSubmit={e => {e.preventDefault(); dispatch({type: "ADD", title, description, dateCreated,complete,dateComplete});} }> 
+    <form onSubmit={e => {e.preventDefault(); handleToDo();} }> 
       <div class="input-group col-lg-12 mb-0">
         <input id="title" name="title" placeholder="title" 
           value={title} onChange={(e)=>setTitle(e.target.value)}/>
