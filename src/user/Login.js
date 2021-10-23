@@ -1,40 +1,64 @@
-import React from 'react'
-import 'bootstrap/dist/css/bootstrap.min.css';
 import * as Icon from 'react-feather';
-import { useHistory, withRouter } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useContext } from 'react/cjs/react.development';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { stateContext } from '../contexts/context'
+import { useResource } from 'react-request-hook';
 
-
+// export default function Login({ dispatchUser }) {
 export default function Login() {
 
-    const history = useHistory();
+  const { dispatch } = useContext(stateContext);
 
-    const handleClick = () => {
-        history.push("../to-do/ToDoList");
-    }
+  const [ username, setUserName] = useState('')
+  const [ password, setPassword ] = useState('')
+  const [ loginFailed, setLoginFailed ] = useState(false)
 
-    return (
-        <form onSubmit={evt => evt.preventDefault()}>
-            <h1 class="h3 mb-3 fw-normal">Login Here</h1>
-            <div class="input-group col-lg-12 mb-4">
-                <div class="input-group-prepend">
-                    <span class="input-group-text bg-gray px-4 border-md border-right-0" >
-                        <Icon.User />
-                    </span>
-                </div>
-                <input id="email" type="email" name="email" placeholder="Email Address" class="form-control bg-white border-left-0 border-md" />
-            </div>
-            <div class="input-group col-lg-12 mb-4">
-                <div class="input-group-prepend">
-                    <span class="input-group-text bg-gray px-4 border-md border-right-0">
-                        <Icon.Lock />
-                    </span>
-                </div>
-                <input id="password" type="password" name="password" placeholder="password" class="form-control bg-white border-left-0 border-md" /> 
-            </div>
-            <div class="d-grid gap-2 d-md-flex">
-                <button onClick={()=> handleClick()} class="btn btn-primary" type="submit">Login</button>
-                <button class="btn btn-primary" type="submit">Register</button>
-            </div>
-        </form>
-    )
+  function handleUsername (evt) { setUserName(evt.target.value) } 
+  function handlePassword (evt) { setPassword(evt.target.value) }
+
+  const [ user, login ] = useResource((username, password) => ({
+    url: `/login/${encodeURI(username)}/${encodeURI(password)}`,
+    method: 'get'
+  }))
+
+  useEffect(() => {
+    if (user && user.data) {
+      if (user.data.length > 0) {
+          setLoginFailed(false)
+          //console.log(state.todos)
+          dispatch({ type: 'LOGIN', username: user.data[0].username})
+          //console.log(state.todos)
+      } else {
+          setLoginFailed(true)
+      }
+    } 
+  }, [user])
+
+  return (
+    <form onSubmit={e => { e.preventDefault(); login(username, password)}}>
+      <h3>Login Here</h3>
+      <div class="input-group col-lg-12 mb-0">
+        <div>
+          <span>
+            <Icon.User />
+          </span>
+        </div>
+        <input type="text" name="login-username" value={username} onChange={handleUsername} placeholder="user name"  id="login-username" />
+      </div>
+      <div class="input-group col-lg-12 mb-0">
+        <div>
+          <span>
+            <Icon.Lock />
+          </span>
+        </div>
+        <input id="password" type="password" name="password" value={password} onChange={handlePassword} placeholder="password" /> 
+        {loginFailed && <span style={{ color: 'red'}}> Invalid username or password</span>}
+      </div>
+      <div>
+        <input type="submit" value="Login" />
+        {/* <button type="submit">Register</button> */}
+      </div>
+    </form>
+  )
 }
