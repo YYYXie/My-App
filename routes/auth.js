@@ -51,7 +51,7 @@ router.post('/register', async function(req, res, next) {
         "username": req.body.username,
         "password": req.hashedPassword
       })
-          
+      const token = jwt.sign({ id: user._id }, privateKey, { algorithm: 'RS256' });    
       return await user.save().then( savedUser => {
         console.log()
         return res.status(201).json({
